@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dels Store - Jual Beli Nomor Telepon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- Untuk ikon -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #000000, #1a1a1a);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 1200px; /* Diperbesar untuk menampung lebih banyak paket */
+            width: 100%;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin: 20px;
+        }
+        .welcome {
+            font-size: 3em;
+            color: #00ff00; /* Hijau */
+            margin: 20px 0;
+            animation: fadeIn 2s ease-in-out, glow 2s infinite alternate;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #00ff00; }
+            to { text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00; }
+        }
+        .profile {
+            background: linear-gradient(45deg, #004d00, #008000); /* Hijau gradien */
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 128, 0, 0.3);
+            position: relative;
+        }
+        .profile h3 {
+            color: #ffffff;
+            margin: 0;
+        }
+        .logout-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff0000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        .logout-btn:hover {
+            background: #cc0000;
+        }
+        .registration {
+            display: none;
+            text-align: center;
+        }
+        .registration.show {
+            display: block;
+        }
+        .main-content {
+            display: none;
+        }
+        .main-content.show {
+            display: block;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input {
+            padding: 12px;
+            margin: 10px;
+            border: 2px solid #0080ff; /* Biru */
+            border-radius: 8px;
+            background: #333;
+            color: #fff;
+            width: 80%;
+            max-width: 300px;
+        }
+        button {
+            padding: 12px 25px;
+            margin: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        .register-btn {
+            background: linear-gradient(45deg, #00ff00, #008000); /* Hijau */
+            color: #000;
+        }
+        .register-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.5);
+        }
+        select {
+            padding: 12px;
+            font-size: 1em;
+            margin-bottom: 20px;
+            border: 2px solid #0080ff;
+            border-radius: 8px;
+            background: #333;
+            color: #fff;
+            width: 80%;
+            max-width: 300px;
+        }
+        .packages {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Lebih kecil untuk menampung banyak */
+            gap: 15px;
+            margin-top: 20px;
+            max-height: 600px; /* Scroll jika terlalu banyak */
+            overflow-y: auto;
+        }
+        .package {
+            background: linear-gradient(45deg, #000080, #0080ff); /* Biru gradien */
+            border: 1px solid #0080ff;
+            border-radius: 12px;
+            padding: 15px; /* Lebih kecil untuk efisiensi */
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 128, 255, 0.3);
+        }
+        .package:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 128, 255, 0.5);
+        }
+        .package i {
+            font-size: 1.5em; /* Lebih kecil */
+            color: #00ff00;
+            margin-bottom: 5px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            animation: modalFade 0.3s;
+        }
+        @keyframes modalFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            background: linear-gradient(45deg, #333, #000);
+            margin: 15% auto;
+            padding: 30px;
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 255, 0, 0.5);
+        }
+        .confirm-btn {
+            background: linear-gradient(45deg, #00ff00, #008000);
+            color: #000;
+        }
+        .confirm-btn:hover {
+            transform: scale(1.05);
+        }
+        .cancel-btn {
+            background: linear-gradient(45deg, #ff0000, #800000);
+            color: #fff;
+        }
+        .cancel-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div id="registration" class="registration show">
+        <div class="container">
+            <h1 style="color: #0080ff;">Registrasi Dels Store</h1>
+            <form id="regForm">
+                <input type="text" id="name" placeholder="Nama Lengkap" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit" class="register-btn">Daftar</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="mainContent" class="main-content">
+        <div class="container">
+            <div class="profile">
+                <h3><i class="fas fa-user"></i> Profil: <span id="userName"></span></h3>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+            <div class="welcome">Welcome to Dels Store</div>
+            <h2 style="color: #00ff00;">Pilih Negara</h2>
+            <select id="countrySelect">
+                <option value="indonesia">Indonesia</option>
+                <option value="usa">USA</option>
+                <option value="uk">UK</option>
+                <option value="japan">Japan</option>
+                <option value="malaysia">Malaysia</option>
+                <option value="singapore">Singapura</option>
+                <option value="australia">Australia</option>
+                <!-- Tambahkan negara lainnya -->
+            </select>
+            <div id="packagesContainer" class="packages">
+                <!-- Paket akan dimuat di sini -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <p style="color: #fff;">Ingin membeli nomor ini? Silahkan konfirmasi.</p>
+            <button class="confirm-btn" onclick="confirmPurchase()">Ya</button>
+            <button class="cancel-btn" onclick="closeModal()">Tidak</button>
+        </div>
+    </div>
+
+    <!-- Modal Rekening -->
+    <div id="accountModal" class="modal">
+        <div class="modal-content">
+            <p style="color: #fff;">Nomor rekening ini: 0882005638283</p>
+            <p style="color: #fff;">Setelah membayar, Anda akan diarahkan ke WhatsApp admin.</p>
+            <button class="confirm-btn" onclick="redirectToWA()">Bayar Sekarang</button>
+        </div>
+    </div>
+
+    <script>
+        // Cek jika sudah registrasi
+        if (localStorage.getItem('registered')) {
+            showMainContent();
+        }
+
+        document.getElementById('regForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            localStorage.setItem('userName', name);
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userPassword', password);
+            localStorage.setItem('registered', 'true');
+            showMainContent();
+        });
+
+        function showMainContent() {
+            document.getElementById('registration').classList.remove('show');
+            document.getElementById('mainContent').classList.add('show');
+            document.getElementById('userName').textContent = localStorage.getItem('userName');
+            loadPackages('indonesia'); // Load default
+        }
+
+        function logout() {
+            localStorage.clear();
+            location.reload(); // Reload halaman untuk kembali ke registrasi
+        }
+
+        // Fungsi untuk generate paket nomor telepon
+        function generatePackages(country) {
+            const packages = [];
+            const numPackages = 50; // 50 paket per negara
+            let price = "";
+            let prefix = "";
+
+            // Tentukan prefix dan harga berdasarkan negara
+            switch (country) {
+                case 'indonesia':
+                    prefix = "+6281";
+                    price = "Rp 2.500";
+                    break;
+                case 'usa':
+                    prefix = "+1-";
+                    price = "$3.000";
+                    break;
+                case 'uk':
+                    prefix = "+44-";
+                    price = "£3.000";
+                    break;
+                case 'japan':
+                    prefix = "+81-";
+                    price = "¥3.000";
+                    break;
+                case 'malaysia':
+                    prefix = "+60-";
+                    price = "RM 3.500";
+                    break;
+                case 'singapore':
+                    prefix = "+65-";
+                    price = "SGD 3.200";
+                    break;
+                case 'australia':
+                    prefix = "+61-";
+                    price = "AUD 3.500";
+                    break;
+                default:
+                    prefix = "+62";
+                    price = "Rp 2.500";
+            }
+
+            for (let i = 0; i < numPackages; i++) {
+                let number = "";
+                if (country === 'indonesia') {
+                    number = prefix + Math.floor(Math.random() * 9 + 1) + "-" + Math.floor(Math.random() * 9000 + 1000) + "-" + Math.floor(Math.random() * 9000 + 1000);
+                } else if (country === 'usa') {
+                    number = prefix + Math.floor(Math.random() * 900 + 100) + "-" + Math.floor(Math.random() * 900 + 100) + "-" + Math.floor(Math.random() * 9000 + 1000);
+                } else if (country === 'uk') {
+                    number = prefix + Math.floor(Math.random() * 90 + 10) + "-" + Math.floor(Math.random() * 9000 + 1000) + "-" + Math.floor(Math.random() * 9000 + 1000);
+                } else if (country === 'japan') {
+                    number = prefix + Math.floor(Math.random() * 9 + 1) + "-" + Math.floor(Math.random() * 9000 + 1000) + "-" + Math.floor(Math.random() * 9000 + 1000);
+                } else if (country === 'malaysia') {
+                    number = prefix + Math.floor(Math.random() * 90 + 10) + "-" + Math.floor(Math.random() * 900 + 100) + "-" + Math.floor(Math.random() * 9000 + 1000);
+                } else if (country === 'singapore') {
+                    number = prefix + Math.floor(Math.random() * 9000 + 1000) + "-" + Math.floor(Math.random() * 9000 + 1000);
+                } else if (country === 'australia') {
+                    number = prefix + "4" + Math.floor(Math.random() * 90 + 10) + "-" + Math.floor(Math.random() * 900 + 100) + "-" + Math.floor(Math.random() * 900 + 100);
+                }
+                packages.push({ number: number, price: price });
+            }
+            return packages;
+        }
+
+        let selectedPackage = null;
+
+        document.getElementById('countrySelect').addEventListener('change', function() {
+            const country = this.value;
+            loadPackages(country);
+        });
+
+        function loadPackages(country) {
+            const container = document.getElementById('packagesContainer');
+            container.innerHTML = '';
+            const packages = generatePackages(country);
+            packages.forEach(pkg => {
+                const div = document.createElement('div');
+                div.className = 'package';
+                div.innerHTML = `<i class="fas fa-phone"></i><p>${pkg.number}</p><p>Harga: ${pkg.price}</p>`;
+                div.onclick = () => selectPackage(pkg);
+                container.appendChild(div);
+            });
+        }
+
+        function selectPackage(pkg) {
+            selectedPackage = pkg;
+            document.getElementById('confirmModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        function confirmPurchase() {
+            closeModal();
+            document.getElementById('accountModal').style.display = 'block';
+        }
+
+        function redirectToWA() {
+            window.location.href = 'https://wa.me/62882005638238';
+        }
+    </script>
+</body>
+</html>
